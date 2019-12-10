@@ -19,7 +19,7 @@ public class FracCalc {
 	public static int top;
 	public static int bottom;
 	public static String finalAnswer;
-	
+
 	public static void main(String[] args) {
 		Scanner console = new Scanner(System.in);
 		System.out.println("Please enter here (\"quit\" to quit) : ");
@@ -30,6 +30,7 @@ public class FracCalc {
 			System.out.println("Please enter here (\"quit\" to quit) : ");
 			input = console.nextLine();
 		}
+		console.close();
 	}
 
 	// TODO: Read the input from the user and call produceAnswer with an equation
@@ -45,6 +46,8 @@ public class FracCalc {
 	// The function should return the result of the fraction after it has been
 	// calculated
 	// e.g. return ==> "1_1/4"
+
+	// Basically the main method to do everything except reducing the answer
 	public static String produceAnswer(String input) {
 		// TODO: Implement this function to produce the solution to the input
 		int spaceAt = input.indexOf(" ");
@@ -54,7 +57,7 @@ public class FracCalc {
 		String first = input.substring(0, spaceAt);
 		String second = input.substring(spaceAt + 3, length);
 
-		// first operand
+		// Find breaking up and storing first operand
 		int whole_Index = first.indexOf("_");
 		if (whole_Index == -1 && first.indexOf("/") == -1) {
 			first_Part = Integer.parseInt(first);
@@ -86,7 +89,7 @@ public class FracCalc {
 			third_Part = Integer.parseInt(first.substring(denom_Index + 1, first.length()));
 		}
 
-		// second operand
+		// Find, breaking up and storing second operand
 		int wholeIndex = second.indexOf("_");
 		if (wholeIndex == -1 && second.indexOf("/") == -1) {
 			firstPart = Integer.parseInt(second);
@@ -118,12 +121,8 @@ public class FracCalc {
 		} else {
 			thirdPart = Integer.parseInt(second.substring(denomIndex + 1, second.length()));
 		}
-		
-		String ans1 = "";
-		ans1 = "whole:" + first_Part + " numerator:" + second_Part + " denominator: " + third_Part;
-		String ans2 = "";
-		ans2 = "whole:" + firstPart + " numerator:" + secondPart + " denominator:" + thirdPart;
-		
+
+		// Doing the actual calculation
 		if (first_Part < 0) {
 			first_top = ((first_Part * third_Part) - second_Part);
 		} else {
@@ -164,28 +163,40 @@ public class FracCalc {
 				bottom = (first_bottom * second_bottom);
 			} else {
 				top = (first_top * second_bottom);
-				bottom = (first_bottom * second_top);	
+				bottom = (first_bottom * second_top);
 			}
 		}
-		System.out.println(top);
-		System.out.println(bottom);
-		
+
+		// Putting the reduced numerator and the denominator together, final answer
 		if (top % bottom == 0) {
 			finalAnswer = top / bottom + "";
-		} else if (first_top == second_top && first_bottom == second_bottom) {
-				finalAnswer = first_top + "/" + (first_bottom / 2);
 		} else {
 			if ((top / bottom) == 0) {
-				finalAnswer = (top % bottom) + "/" + bottom;
+				int d = reduceFraction(top, bottom);
+				finalAnswer = (top /= d) + "/" + (bottom /= d);
 			} else {
-				finalAnswer = (top / bottom) + "_" + Math.abs((top % bottom)) + "/" + Math.abs(bottom);
+				int d = reduceFraction(top, bottom);
+				finalAnswer = (top / bottom) + "_" + Math.abs(((top % bottom) / d)) + "/" + Math.abs(bottom / d);
 			}
 		}
 		System.out.println(finalAnswer);
 		return finalAnswer;
 	}
 
+	// Method to reduced the calculated answer
+	public static int reduceFraction(int x, int y) {
+		int d;
+		d = gcd(x, y);
+
+		return d;
+	}
+
+	public static int gcd(int a, int b) {
+		if (b == 0) {
+			return a;
+		}
+		return gcd(b, a % b);
+	}
 	// TODO: Fill in the space below with any helper methods that you think you will
 	// need
-
 }
